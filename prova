@@ -1,0 +1,29 @@
+import pandas as pd
+import numpy as np
+import datetime as dt
+import sklearn
+import prophet
+from sklearn.model_selection import TimeSeriesSplit
+from sqlalchemy import create_engine
+from calendar import monthrange
+from sklearn.linear_model import LinearRegression
+from matplotlib import pyplot as plt
+
+
+user = 'gvenuti'
+password = 'Factory2021'
+host = 'tf-redshift-cluster-2.ctfqw3a0fvpt.eu-west-1.redshift.amazonaws.com'
+port = 5439
+db = 'factory14'
+
+def grant_access(conn, schema='analytics_sandbox', team='analytics_team'):
+    perm_str = f"""GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} TO GROUP {team};
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} TO though_spot_app;
+    
+    GRANT ALL PRIVILEGES ON SCHEMA {schema} TO GROUP {team}; select 1
+    """
+    pd.read_sql(perm_str, con=conn)  
+
+conn_str = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}"
+engine = create_engine(conn_str)
+conn = engine.connect()
